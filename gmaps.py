@@ -44,6 +44,21 @@ def reverse_geocode(coord):
 	print('geocode: ' + json.dumps(result,indent=4))
 	return result
 
+def reverse_result_to_state(result):
+	components = result[0]["address_components"] #type is list
+	def get_entry_with_type(cual):
+		for each in components:
+			if cual in each["types"]:
+				return each
+		return None
+	entry = get_entry_with_type("administrative_area_level_1")
+	return entry["short_name"]
+
+def coord_range(coord0, coord1, min_side_length):
+	br = tuple([min(coord0[i], coord1[i]) for i in (0,1)])
+	tl = tuple([max(coord0[i], coord1[i]) for i in (0,1)])
+
 if __name__ == '__main__':
 	# reverse_geocode((39.934917146948614, -85.83684789098275))
-	operation((39.934917146948614, -85.83684789098275), 'reverse_geocode')
+	result = operation((39.934917146948614, -85.83684789098275), 'reverse_geocode')
+	print(reverse_result_to_state(result))
